@@ -1,7 +1,7 @@
 export default {
   providers: [
     {
-      domain: "https://summary-hen-95.clerk.accounts.dev",
+      domain: "https://tidy-fish-78.clerk.accounts.dev",
       applicationID: "convex",
     },
   ],

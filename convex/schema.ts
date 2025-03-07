@@ -40,4 +40,43 @@ export default defineSchema({
       searchField: "payee",
       filterFields: ["userId"],
     }),
+
+  // User Tables:
+
+  userApiLimits: defineTable({
+    userId: v.string(),
+    count: v.number(),
+    createdAt: v.number(), // Store timestamps as Unix timestamps (Date.now())
+    updatedAt: v.optional(v.number()),
+  }).index("by_userId", ["userId"]),
+
+  // User Subscription
+  userSubscriptions: defineTable({
+    userId: v.string(),
+    stripeCustomerId: v.optional(v.string()),
+    stripeSubscriptionId: v.optional(v.string()),
+    stripePriceId: v.optional(v.string()),
+    stripeCurrentPeriodEnd: v.optional(v.number()), // Convert DateTime to Unix timestamp
+  }).index("by_userId", ["userId"]),
+
+  // Watch List
+  watchLists: defineTable({
+    userId: v.string(),
+    stockTicker: v.string(),
+    modelPrediction: v.number(),
+    createdAt: v.number(),
+    updatedAt: v.optional(v.number()),
+    latestClosingPrice: v.optional(v.number()),
+    analyzedNews: v.optional(v.string()),
+  }).index("by_user_stock", ["userId", "stockTicker"]),
+
+  // User Terms Acceptance
+  userTermsAcceptances: defineTable({
+    userId: v.string(),
+    userName: v.optional(v.string()),
+    userEmail: v.optional(v.string()),
+    accepted: v.boolean(),
+    termsVersion: v.string(),
+    acceptedAt: v.number(),
+  }).index("by_userId", ["userId"]),
 });
