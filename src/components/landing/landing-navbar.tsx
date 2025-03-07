@@ -18,23 +18,19 @@ export const LandingNavbar = () => {
 
   // Check if user has accepted terms
   const userTerms = useQuery(api.terms.checkTerms);
-  const acceptTerms = useMutation(api.terms.acceptTerms);
+  // const acceptTerms = useMutation(api.terms.acceptTerms);
 
   const handleSignInUpClick = async () => {
-    if (isSignedIn) {
-      try {
-        if (!userTerms?.accepted) {
-          // If user hasn't accepted terms, insert a record and redirect
-          // await acceptTerms();
-          router.push("/user-terms"); // Redirect to terms page
-        } else {
-          router.push("/dashboard"); // Redirect to dashboard
-        }
-      } catch (error) {
-        console.error("Error during terms acceptance check:", error);
-      }
+    if (!isSignedIn) {
+      RedirectToSignIn({ redirectUrl: "/user-terms" }); // Redirect to Clerk sign-in
+      return;
+    }
+
+    // User is signed in, check if they accepted the terms
+    if (userTerms && userTerms.accepted) {
+      router.push("/dashboard"); // Redirect to dashboard if accepted
     } else {
-      RedirectToSignIn({ redirectUrl: "/dashboard" }); // Redirect to sign-in
+      router.push("/user-terms"); // Redirect to terms page if not accepted
     }
   };
 

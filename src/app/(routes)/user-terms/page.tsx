@@ -10,7 +10,7 @@ export default function UserTerms() {
   const router = useRouter();
 
   // Fetch existing terms acceptance
-  const data = useQuery(api.terms.checkTerms);
+  const userTerms = useQuery(api.terms.checkTerms);
 
   // Mutation to accept terms
   const acceptTerms = useMutation(api.terms.acceptTerms);
@@ -19,15 +19,18 @@ export default function UserTerms() {
   const [acceptedAt, setAcceptedAt] = useState<Date | null>(null);
 
   useEffect(() => {
-    if (data?.accepted) {
-      setHasAccepted(true);
-      setAcceptedAt(new Date(data.acceptedAt));
+    if (userTerms?.accepted) {
+      router.push("/dashboard");
     }
-  }, [data]);
+  }, [userTerms, router]);
 
   const handleAcceptTerms = async () => {
     await acceptTerms();
-    router.refresh();
+    setHasAccepted(true);
+    setAcceptedAt(
+      // userTerms?.acceptedAt can be undefined, but the Date constructor does not accept undefined as a valid argument.
+      userTerms?.acceptedAt ? new Date(userTerms.acceptedAt) : null
+    );
     router.push("/dashboard"); // Redirect to dashboard
   };
 
