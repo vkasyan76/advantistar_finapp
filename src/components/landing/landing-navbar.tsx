@@ -3,31 +3,41 @@
 import { Montserrat } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
-import { useAuth, RedirectToSignIn } from "@clerk/nextjs"; // Clerk authentication
+// import { useAuth, RedirectToSignIn } from "@clerk/nextjs"; // Clerk authentication
+import { useAuth, useClerk } from "@clerk/clerk-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { useQuery, useMutation } from "convex/react";
+import { useQuery } from "convex/react";
 import { api } from "@/../convex/_generated/api"; // Import Convex API
 
 const font = Montserrat({ weight: "600", subsets: ["latin"] });
 
 export const LandingNavbar = () => {
   const { isSignedIn } = useAuth();
+  const { redirectToSignIn } = useClerk(); // destructure the redirect function
   const router = useRouter();
 
   // Check if user has accepted terms
   const userTerms = useQuery(api.terms.checkTerms);
-  // const acceptTerms = useMutation(api.terms.acceptTerms);
 
-  const handleSignInUpClick = async () => {
+  const handleSignInUpClick = () => {
     if (!isSignedIn) {
-      RedirectToSignIn({ redirectUrl: "/user-terms" }); // Redirect to Clerk sign-in
+      // Redirect to sign-in and then to either terms page or dashboard
+      // RedirectToSignIn({
+      //   redirectUrl: userTerms?.accepted ? "/dashboard" : "/user-terms",
+      // });
+      // Redirect to sign-in/sign-up with correct post-login destination
+      redirectToSignIn({
+        // redirectUrl: "/",
+        afterSignInUrl: userTerms?.accepted ? "/dashboard" : "/user-terms",
+        afterSignUpUrl: userTerms?.accepted ? "/dashboard" : "/user-terms",
+      });
       return;
     }
 
-    // User is signed in, check if they accepted the terms
-    if (userTerms && userTerms.accepted) {
+    // User is signed in, check terms acceptance
+    if (userTerms?.accepted) {
       router.push("/dashboard"); // Redirect to dashboard if accepted
     } else {
       router.push("/user-terms"); // Redirect to terms page if not accepted
@@ -62,3 +72,8 @@ export const LandingNavbar = () => {
     </nav>
   );
 };
+
+// The logic:
+// If the user is signed in and has accepted the terms, they should be redirected to the dashboard (/dashboard).
+// If the user is not signed in or signed up and has not accepted the terms, they should be redirected to Clerk’s sign-in/sign-up page first. After signing in, they should be taken to the terms page (/user-terms).
+// If the user is not signed in but has accepted the terms before, they should be redirected to Clerk’s sign-in/sign-up page, and after signing in, they should be redirected to the dashboard (/dashboard)

@@ -1,11 +1,13 @@
 import { mutation, query } from "./_generated/server";
 import { ConvexError } from "convex/values";
 
+// Make the Query Gracefully Handle “No User” on the landing page
 export const checkTerms = query({
   handler: async (ctx) => {
     const user = await ctx.auth.getUserIdentity();
     if (!user) {
-      throw new ConvexError("Unauthorized");
+      // throw new ConvexError("Unauthorized");
+      return { accepted: false, acceptedAt: null };
     }
 
     return await ctx.db
