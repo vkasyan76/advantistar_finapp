@@ -21,27 +21,16 @@ export const LandingNavbar = () => {
   // Check if user has accepted terms
   const userTerms = useQuery(api.terms.checkTerms);
 
-  const handleSignInUpClick = () => {
+  const handleLoginClick = () => {
     if (!isSignedIn) {
-      // Redirect to sign-in and then to either terms page or dashboard
-      // RedirectToSignIn({
-      //   redirectUrl: userTerms?.accepted ? "/dashboard" : "/user-terms",
-      // });
-      // Redirect to sign-in/sign-up with correct post-login destination
       redirectToSignIn({
-        // redirectUrl: "/",
-        afterSignInUrl: userTerms?.accepted ? "/dashboard" : "/user-terms",
-        afterSignUpUrl: userTerms?.accepted ? "/dashboard" : "/user-terms",
+        afterSignInUrl: "/auth-callback",
+        afterSignUpUrl: "/auth-callback",
       });
       return;
     }
 
-    // User is signed in, check terms acceptance
-    if (userTerms?.accepted) {
-      router.push("/dashboard"); // Redirect to dashboard if accepted
-    } else {
-      router.push("/user-terms"); // Redirect to terms page if not accepted
-    }
+    router.push(userTerms?.accepted ? "/dashboard" : "/user-terms");
   };
 
   return (
@@ -64,9 +53,10 @@ export const LandingNavbar = () => {
         <Button
           variant="outline"
           className="rounded-full"
-          onClick={handleSignInUpClick}
+          onClick={handleLoginClick}
         >
-          Sign-In / Sign-Up
+          {/* Sign-In / Sign-Up */}
+          {isSignedIn ? "Login" : "Sign-In / Sign-Up"}
         </Button>
       </div>
     </nav>

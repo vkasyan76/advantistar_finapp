@@ -11,6 +11,7 @@ const isProtectedRoute = createRouteMatcher([
   "/settings(.*)",
   "/categories(.*)",
   "/transactions(.*)",
+  // "/auth-callback(.*)",
 ]);
 
 // export default clerkMiddleware();
