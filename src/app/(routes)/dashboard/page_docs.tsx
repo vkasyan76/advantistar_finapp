@@ -1,11 +1,11 @@
 "use client";
 // import { useQuery } from "convex/react";
-import { api } from "../../../convex/_generated/api";
+import { api } from "../../../../convex/_generated/api";
 import { usePaginatedQuery } from "convex/react";
 import { useSearchParam } from "@/hooks/use-search-param";
-import { Navbar } from "../(routes)/navbar";
-import { AccountsTable } from "../(routes)/accounts-table";
-import { CreateAccountDialog } from "../(routes)/create-account-dialog";
+import { Navbar } from "../navbar";
+import { AccountsTable } from "../accounts-table";
+import { CreateAccountDialog } from "../create-account-dialog";
 
 export default function Home() {
   const [search] = useSearchParam();
