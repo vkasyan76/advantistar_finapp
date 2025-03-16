@@ -1,17 +1,29 @@
 "use client";
 
 import { useState } from "react";
+import { useQuery } from "convex/react";
 import { getStockModel } from "@/api/stock-models";
 import StockCharts from "@/components/stocks/stock-charts";
 import TradeDataGrid from "@/components/stocks/trade-data-grid";
 import ModelSummaryGrid from "@/components/stocks/model-summary-grid";
+import { Select } from "@/components/select";
+import { api } from "../../../convex/_generated/api";
+import { Button } from "@/components/ui/button";
+
 // import TickersUploader from "@/components/stocks/tickers_uploader";
 
 export default function StockModelsPage() {
   const [ticker, setTicker] = useState("");
   const [modelData, setModelData] = useState<any>(null);
 
+  // Fetch tickers from Convex using the new API pattern
+  const tickers = useQuery(api.stocks.getTickers) || [];
+
+  // Loading state for tickers
+  const isLoadingTickers = tickers === undefined;
+
   const handleFetchData = async () => {
+    if (!ticker) return;
     try {
       const result = await getStockModel(ticker);
       console.log("Fetched model data:", result);
@@ -25,19 +37,20 @@ export default function StockModelsPage() {
     <div className="max-w-screen-2xl mx-auto w-full pb-10">
       {/* Input for Stock Ticker */}
       <div className="my-4">
-        <input
-          className="border p-2 mr-2"
-          type="text"
+        <Select
+          options={tickers}
           value={ticker}
-          onChange={(e) => setTicker(e.target.value)}
-          placeholder="Enter stock ticker..."
+          onChange={setTicker}
+          onCreate={(value) => setTicker(value)} // Allow user input if needed
+          placeholder="Select or type a ticker..."
+          disabled={isLoadingTickers} // Disable select while loading
         />
-        <button
+        <Button
           className="bg-blue-500 text-white p-2"
           onClick={handleFetchData}
         >
           Fetch Data
-        </button>
+        </Button>
       </div>
 
       {/* If we have data, render the chart and the table */}

@@ -1,6 +1,6 @@
 // convex/stocks.ts
 import { ConvexError, v } from "convex/values";
-import { mutation } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 
 // Insert exactly one ticker document into the "tickers_index" table.
 export const insertTickers = mutation({
@@ -35,5 +35,15 @@ export const insertTickers = mutation({
       results.push(doc);
     }
     return results;
+  },
+});
+
+export const getTickers = query({
+  handler: async (ctx) => {
+    const tickers = await ctx.db.query("tickers_index").collect();
+    return tickers.map((ticker) => ({
+      label: ticker.Name, // Display the company name
+      value: ticker.ticker, // Use the ticker symbol as value
+    }));
   },
 });
