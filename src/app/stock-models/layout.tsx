@@ -4,7 +4,7 @@ type Props = {
   children: React.ReactNode;
 };
 
-const DashboardLayout = ({ children }: Props) => {
+const StockPageLayout = ({ children }: Props) => {
   return (
     <>
       <StocksHeader />
@@ -13,4 +13,4 @@ const DashboardLayout = ({ children }: Props) => {
   );
 };
 
-export default DashboardLayout;
+export default StockPageLayout;

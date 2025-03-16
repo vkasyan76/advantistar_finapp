@@ -1,8 +1,9 @@
 import { ClerkLoaded, ClerkLoading, UserButton } from "@clerk/nextjs";
 import { HeaderLogo } from "../header-logo";
 import { Navigation } from "../navigation";
+import { TickerFilter } from "../stocks/ticker-filter";
 
-import { Filters } from "../filters/filters";
+// import { Filters } from "../filters/filters";
 
 export const StocksHeader = () => {
   return (
@@ -20,7 +21,11 @@ export const StocksHeader = () => {
             <div className="size-8 animate-spin text-slate-400">Loading...</div>
           </ClerkLoading>
         </div>
-        <Filters />
+        {/* <Filters /> */}
+        {/* Imported TickerFilter */}
+        <div className="flex gap-4 items-center mt-4">
+          <TickerFilter />
+        </div>
       </div>
     </div>
   );

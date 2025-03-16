@@ -9,11 +9,39 @@ import ModelSummaryGrid from "@/components/stocks/model-summary-grid";
 
 // import TickersUploader from "@/components/stocks/tickers_uploader";
 
+interface CombinedData {
+  Date: string;
+  Actual_Price: number;
+  Predicted_Price: number;
+}
+
+interface TradeData {
+  Date: string;
+  BuyPrice: number;
+  SellPrice: number;
+  Profit: number;
+}
+
+interface ModelData {
+  future_prediction: number;
+  latest_closing_price: number;
+  mape: number;
+  correlation_coefficient: number;
+  combined_data: CombinedData[]; // Adjust based on actual data structure
+  trade_data: TradeData[]; // Adjust based on actual data structure
+}
+
 export default function StockModelsPage() {
   const params = useSearchParams();
   const ticker = params.get("ticker") || ""; // Get ticker from URL
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [modelData, setModelData] = useState<any>(null);
+  const [modelData, setModelData] = useState<ModelData>({
+    combined_data: [],
+    future_prediction: 0, // Ensure numbers, not strings
+    latest_closing_price: 0,
+    mape: 0,
+    correlation_coefficient: 0,
+    trade_data: [],
+  });
 
   useEffect(() => {
     if (!ticker) return;
@@ -22,7 +50,7 @@ export default function StockModelsPage() {
       try {
         const result = await getStockModel(ticker);
         console.log("Fetched model data:", result);
-        setModelData(result); //
+        setModelData(result as ModelData); // ✅ Force TypeScript to accept the API response
       } catch (error) {
         console.error("Failed to fetch data:", error);
       }
@@ -39,10 +67,11 @@ export default function StockModelsPage() {
             <StockCharts chartData={modelData?.combined_data} />
             <ModelSummaryGrid
               summaryData={{
-                future_prediction: modelData.future_prediction,
-                latest_closing_price: modelData.latest_closing_price,
-                mape: modelData.mape,
-                correlation_coefficient: modelData.correlation_coefficient,
+                future_prediction: modelData?.future_prediction ?? 0,
+                latest_closing_price: modelData?.latest_closing_price ?? 0,
+                mape: modelData?.mape ?? 0,
+                correlation_coefficient:
+                  modelData?.correlation_coefficient ?? 0,
               }}
             />
           </div>
