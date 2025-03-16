@@ -12,7 +12,7 @@ ModuleRegistry.registerModules([ClientSideRowModelModule]);
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 
-interface AgGridTestProps {
+interface TradeDataGridProps {
   rowData: {
     Date: string;
     BuyPrice: string;
@@ -21,7 +21,7 @@ interface AgGridTestProps {
   }[];
 }
 
-export default function AgGridTest({ rowData }: AgGridTestProps) {
+export default function TradeDataGrid({ rowData }: TradeDataGridProps) {
   // Define columns explicitly
   const columnDefs: ColDef[] = [
     { headerName: "Date", field: "Date" },
@@ -34,6 +34,20 @@ export default function AgGridTest({ rowData }: AgGridTestProps) {
     return <p>No Trade Data</p>;
   }
 
+  // Compute totals (convert values to numbers before summing)
+  const totals = {
+    Date: "Totals",
+    BuyPrice: rowData
+      .reduce((acc, row) => acc + Number(row.BuyPrice), 0)
+      .toFixed(2),
+    SellPrice: rowData
+      .reduce((acc, row) => acc + Number(row.SellPrice), 0)
+      .toFixed(2),
+    Profit: rowData
+      .reduce((acc, row) => acc + Number(row.Profit), 0)
+      .toFixed(2),
+  };
+
   return (
     <div>
       <h2 className="text-xl font-bold mb-2">Trade Data</h2>
@@ -42,6 +56,7 @@ export default function AgGridTest({ rowData }: AgGridTestProps) {
           rowData={rowData}
           columnDefs={columnDefs}
           defaultColDef={{ flex: 1, minWidth: 100 }}
+          pinnedBottomRowData={[totals]}
         />
       </div>
     </div>

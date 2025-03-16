@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { getStockModel } from "@/api/stock-models";
 import StockCharts from "@/components/stocks/stock-charts";
-import AgGridTest from "@/components/stocks/agGridTest";
+import TradeDataGrid from "@/components/stocks/trade-data-grid";
+import ModelSummaryGrid from "@/components/stocks/model-summary-grid";
 
 export default function StockModelsPage() {
   const [ticker, setTicker] = useState("");
@@ -21,9 +22,6 @@ export default function StockModelsPage() {
 
   return (
     <div className="max-w-screen-2xl mx-auto w-full pb-10">
-      <h1 className="text-2xl font-bold mb-4">Welcome, Valentyn!</h1>
-      <p>This is your AI Assisted Financial Reporting Area</p>
-
       {/* Input for Stock Ticker */}
       <div className="my-4">
         <input
@@ -43,12 +41,21 @@ export default function StockModelsPage() {
 
       {/* If we have data, render the chart and the table */}
       {modelData && (
-        <div className="space-y-8">
-          {/* Pass combined_data to StockCharts */}
-          <StockCharts chartData={modelData.combined_data} />
-
-          {/* Pass trade_data to AgGridTest */}
-          <AgGridTest rowData={modelData.trade_data} />
+        <div className="flex flex-col lg:flex-row gap-8">
+          <div className="w-full lg:w-1/2">
+            <StockCharts chartData={modelData.combined_data} />
+            <ModelSummaryGrid
+              summaryData={{
+                future_prediction: modelData.future_prediction,
+                latest_closing_price: modelData.latest_closing_price,
+                mape: modelData.mape,
+                correlation_coefficient: modelData.correlation_coefficient,
+              }}
+            />
+          </div>
+          <div className="w-full lg:w-1/2">
+            <TradeDataGrid rowData={modelData.trade_data} />
+          </div>
         </div>
       )}
     </div>
