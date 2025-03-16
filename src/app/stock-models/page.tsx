@@ -5,6 +5,7 @@ import { getStockModel } from "@/api/stock-models";
 import StockCharts from "@/components/stocks/stock-charts";
 import TradeDataGrid from "@/components/stocks/trade-data-grid";
 import ModelSummaryGrid from "@/components/stocks/model-summary-grid";
+// import TickersUploader from "@/components/stocks/tickers_uploader";
 
 export default function StockModelsPage() {
   const [ticker, setTicker] = useState("");
@@ -58,6 +59,7 @@ export default function StockModelsPage() {
           </div>
         </div>
       )}
+      {/* <TickersUploader /> */}
     </div>
   );
 }

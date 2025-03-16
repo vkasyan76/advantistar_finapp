@@ -79,4 +79,12 @@ export default defineSchema({
     termsVersion: v.string(),
     acceptedAt: v.number(),
   }).index("by_userId", ["userId"]),
+
+  tickers_index: defineTable({
+    // Each document in this table will have the following fields:
+    ticker: v.string(),
+    Name: v.string(),
+    indexTicker: v.string(),
+    industryTicker: v.string(),
+  }),
 });

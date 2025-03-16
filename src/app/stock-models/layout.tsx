@@ -1,4 +1,4 @@
-import { Header } from "@/components/header";
+import { StocksHeader } from "@/components/stocks/stocks-header";
 
 type Props = {
   children: React.ReactNode;
@@ -7,8 +7,8 @@ type Props = {
 const DashboardLayout = ({ children }: Props) => {
   return (
     <>
-      <Header />
-      <main className="px-3 lg:px-14">{children}</main>
+      <StocksHeader />
+      <main className="px-3 lg:px-8">{children}</main>
     </>
   );
 };
