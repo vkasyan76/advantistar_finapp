@@ -39,10 +39,11 @@ export default function StockModelsPage() {
             <StockCharts chartData={modelData?.combined_data} />
             <ModelSummaryGrid
               summaryData={{
-                future_prediction: modelData.future_prediction,
-                latest_closing_price: modelData.latest_closing_price,
-                mape: modelData.mape,
-                correlation_coefficient: modelData.correlation_coefficient,
+                future_prediction: modelData?.future_prediction ?? "",
+                latest_closing_price: modelData?.latest_closing_price ?? "",
+                mape: modelData?.mape ?? "",
+                correlation_coefficient:
+                  modelData?.correlation_coefficient ?? "",
               }}
             />
           </div>
