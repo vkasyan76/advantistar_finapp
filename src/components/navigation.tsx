@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/sheet";
 
 const routes = [
-  { href: "/", label: "Overview" },
+  { href: "/dashboard", label: "Dashboard" },
   { href: "/transactions", label: "Transactions" },
   { href: "/accounts", label: "Accounts" },
   { href: "/categories", label: "Categories" },
