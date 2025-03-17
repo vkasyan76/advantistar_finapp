@@ -21,7 +21,11 @@ export default function StockModelsPage() {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    if (!ticker) return;
+    if (!ticker) {
+      setLoading(false);
+      setModelData(null);
+      return;
+    }
 
     const fetchData = async () => {
       try {
@@ -39,55 +43,50 @@ export default function StockModelsPage() {
     fetchData();
   }, [ticker]); // Re-fetch when ticker changes
 
+  // Helper function: Renders "N/A" if no ticker or data is missing.
+  // Otherwise, if loading, show a spinner, else show real data.
+  const renderValue = (key: string, suffix = ""): JSX.Element | string => {
+    if (!ticker) {
+      // No ticker => placeholders
+      return "N/A";
+    }
+    if (loading) {
+      // Ticker but still loading => spinner
+      return <Loader2 className="size-6 text-slate-300 animate-spin" />;
+    }
+    // Ticker + not loading => actual data from modelData
+    const value = modelData?.[key] ?? "N/A";
+    return `${value}${suffix}`;
+  };
+
   return (
     <div className="max-w-screen-2xl mx-auto w-full pb-10">
-      {/* ✅ Top Summary Cards (Always Visible, Show Loader Inside if Loading) */}
+      {/* Top Summary Cards Always Visible */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-2 mb-8">
         <StockDataCard
           title="Future Prediction & Latest Price"
-          value={
-            loading ? (
-              <Loader2 className="size-6 text-slate-300 animate-spin" />
-            ) : (
-              `${modelData?.future_prediction ?? "N/A"} / ${modelData?.latest_closing_price ?? "N/A"}`
-            )
-          }
-          percentageChange={""}
+          value={`${renderValue("future_prediction")} / ${renderValue("latest_closing_price")}`}
           icon={FaChartLine}
           variant="default"
           dateRange={`Stock: ${ticker || "No ticker selected"}`}
         />
         <StockDataCard
           title="MAPE (Error %)"
-          value={
-            loading ? (
-              <Loader2 className="size-6 text-slate-300 animate-spin" />
-            ) : (
-              `${modelData?.mape ?? "N/A"}%`
-            )
-          }
-          percentageChange={""}
+          value={renderValue("mape", "%")}
           icon={FaPercentage}
           variant="warning"
           dateRange={`Stock: ${ticker || "No ticker selected"}`}
         />
         <StockDataCard
           title="Correlation Coefficient"
-          value={
-            loading ? (
-              <Loader2 className="size-6 text-slate-300 animate-spin" />
-            ) : (
-              `${modelData?.correlation_coefficient ?? "N/A"}`
-            )
-          }
-          percentageChange={""}
+          value={renderValue("correlation_coefficient")}
           icon={FaProjectDiagram}
           variant="success"
           dateRange={`Stock: ${ticker || "No ticker selected"}`}
         />
       </div>
 
-      {/* ✅ Charts & Tables (Only Show When Data is Available) */}
+      {/* Show Charts & Table Only if Ticker is present AND not loading */}
       {ticker && !loading && (
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="w-full lg:w-1/2">
@@ -98,6 +97,11 @@ export default function StockModelsPage() {
           </div>
         </div>
       )}
+
+      {/* Optionally, show an empty message if there's a ticker but no data */}
+      {/* if (ticker && !loading && !modelData) {
+          return <p>No data available for this ticker.</p>;
+      } */}
     </div>
   );
 }
